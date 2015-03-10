@@ -148,6 +148,7 @@ Ext.define('realPneus.controller.main', {
 	var j = 0;
 	var _store = Ext.getStore('sincronizarClientesStore');
 	var _store2 = Ext.getStore('clientesStore');
+	
 	_store.each(function () {
 	    var _record = _store.data.get(j);
 	    var _model = Ext.create('realPneus.model.clientesModel', {
