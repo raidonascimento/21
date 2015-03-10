@@ -107,9 +107,24 @@ Ext.define('realPneus.controller.main', {
 	Ext.Viewport.setActiveItem(this.getPneusList());
     },
     teste: function () {
-	var _coletasStore = Ext.getStore('coletasStore');
-	_coletasStore.load();
-	Ext.Viewport.setActiveItem(this.getMenuIniciar());
+		var db = openDatabase("realPneus2", "1.0", "banco", 200000);
+        db.transaction(function (tx) {tx.executeSql('CREATE TABLE IF NOT EXISTS contatos (codigo, nome_cliente)');
+        
+        tx.executeSql('INSERT INTO contatos (codigo, nome_cliente) VALUES ("1","sergio reis")');
+        
+        tx.executeSql('INSERT INTO contatos (codigo, nome_cliente) VALUES ("2","carlos guimaraes")');
+        
+        tx.executeSql('INSERT INTO contatos (codigo, nome_cliente)VALUES ("3","maria silva")');
+        tx.executeSql('INSERT INTO contatos (codigo, nome_cliente) VALUES ("4","joao souza")');
+        });
+	
+	
+	
+	
+	
+//	var _coletasStore = Ext.getStore('coletasStore');
+//	_coletasStore.load();
+//	Ext.Viewport.setActiveItem(this.getMenuIniciar());
 //	this.salvarIdColetaPneus();
     },
     sincronizar: function () {
@@ -336,7 +351,7 @@ Ext.define('realPneus.controller.main', {
     search: function (field) {
 	alert("ALERTA FUNCIONA");
 	//console.log(field);
-	var db = openDatabase("realPneus", "1.0", "banco", 200000);
+	var db = openDatabase("realPneus2", "1.0", "banco", 200000);
 
 	var value = field.getValue();
 	db.transaction(function (tx) {
