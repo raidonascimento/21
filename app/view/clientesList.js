@@ -7,10 +7,14 @@ Ext.define('realPneus.view.clientesList', {
 	'Ext.field.Search',
 	'Ext.Toolbar',
 	'realPneus.store.clientesStore',
-        'Ext.XTemplate'
+	'Ext.XTemplate',
+	'Ext.Panel'
     ],
+    id: 'clientesList',
     config: {
-	store: 'clientesStore',
+	disableSelection: true,
+	//store: 'clientesStore',
+	store: 'Contatos',
 	itemTpl: '{nome_cliente}',
 	onItemDisclosure: true,
 	//filters: true,
@@ -18,8 +22,8 @@ Ext.define('realPneus.view.clientesList', {
 	    {
 		docked: 'top',
 		xtype: 'toolbar',
-		//ui: 'light',
-		title: 'Lista de Clientes',
+		ui: 'light',
+		//title: 'Lista de Clientes',
 		items: [
 		    {
 			xtype: 'button',
@@ -30,7 +34,7 @@ Ext.define('realPneus.view.clientesList', {
 		    {
 			xtype: 'searchfield',
 			itemId: 'searchField',
-			placeHolder: 'Search'
+			placeHolder: '4 caracteres'
 		    }
 
 		]

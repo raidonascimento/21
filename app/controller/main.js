@@ -96,8 +96,8 @@ Ext.define('realPneus.controller.main', {
 	Ext.Viewport.setActiveItem(this.getColetasForm());
     },
     showListaClientes: function () {
-	//var store = Ext.getStore('clientesStore');
-	//store.load();
+	var store = Ext.getStore('clientesStore');
+	store.load();
 	Ext.Viewport.setActiveItem(this.getClientesList());
     },
     showServicoList: function () {
@@ -334,7 +334,8 @@ Ext.define('realPneus.controller.main', {
 	servicoField.enable();
     },
     search: function (field) {
-	console.log(field);
+	alert("ALERTA FUNCIONA");
+	//console.log(field);
 	var db = openDatabase("realPneus", "1.0", "banco", 200000);
 
 	var value = field.getValue();
@@ -345,9 +346,9 @@ Ext.define('realPneus.controller.main', {
 		tx.executeSql(_query, [], function (tx, results) {
 //		    console.log(storeC);
 		    var storeC = Ext.getStore('Contatos');
-		    console.log(storeC);
+		    //console.log(storeC);
 		    var len = results.rows.length, i;
-		    console.log(len);
+		   // console.log(len);
 		    storeC.removeAll();
 		    storeC.sync();
 		    for (i = 0; i < len; i++) {
