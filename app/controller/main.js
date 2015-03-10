@@ -2,7 +2,9 @@ Ext.define('realPneus.controller.main', {
     extend: 'Ext.app.Controller',
     requires: [
 	'Ext.MessageBox',
-	'Ext.util.Filter'
+	'Ext.util.Filter',
+	'Ext.field.Search',
+	'Ext.List'
     ],
     config: {
 	routes: {
@@ -94,8 +96,8 @@ Ext.define('realPneus.controller.main', {
 	Ext.Viewport.setActiveItem(this.getColetasForm());
     },
     showListaClientes: function () {
-	var store = Ext.getStore('clientesStore');
-	store.load();
+	//var store = Ext.getStore('clientesStore');
+	//store.load();
 	Ext.Viewport.setActiveItem(this.getClientesList());
     },
     showServicoList: function () {
@@ -251,11 +253,11 @@ Ext.define('realPneus.controller.main', {
 	_storePneusColeta.each(function () {
 	    var _recordPneusColeta = _storePneusColeta.data.get(j + 1);
 
-	    if (_recordPneusColeta.data.codigo_coleta == '') {
+	    if (_recordPneusColeta.data.codigo_coleta === '') {
 		var _coletasStore = Ext.getStore('coletasStore');
 		_coletasStore.load();
 		var _recordColetas = _coletasStore.data.last();
-		if (_recordColetas == null) {
+		if (_recordColetas === null) {
 		    _recordPneusColeta.set('codigo_coleta', '1.0');
 		    _storePneusColeta.sync();
 		} else {
@@ -297,7 +299,7 @@ Ext.define('realPneus.controller.main', {
 	_storePneusColeta.each(function () {
 	    var _recordPneusColeta = _storePneusColeta.data.get(j + 1);
 
-	    if (_recordPneusColeta.data.codigo_coleta == '') {
+	    if (_recordPneusColeta.data.codigo_coleta === '') {
 		var _coletasStore = Ext.getStore('coletasStore');
 		_coletasStore.load();
 		var _recordColetas = _coletasStore.data.last();
@@ -320,7 +322,7 @@ Ext.define('realPneus.controller.main', {
 	_servicoStore.each(function () {
 
 	    var _recordServico = _servicoStore.data.get(i);
-	    if (_record.data.medida == _recordServico.data.medida) {
+	    if (_record.data.medida === _recordServico.data.medida) {
 		option[n] = new Object();
 		option[n].text = _recordServico.data.nome;
 		option[n].value = _recordServico.data.codigo;
@@ -331,11 +333,11 @@ Ext.define('realPneus.controller.main', {
 	servicoField.setOptions(option);
 	servicoField.enable();
     },
-    search: function (textfield, e, eOpts) {
-	console.log("OI");
+    search: function (field) {
+	console.log(field);
 	var db = openDatabase("realPneus", "1.0", "banco", 200000);
 
-	var value = textfield.getValue();
+	var value = field.getValue();
 	db.transaction(function (tx) {
 	    var _query = '';
 	    if (value.length > 3) {
@@ -343,7 +345,9 @@ Ext.define('realPneus.controller.main', {
 		tx.executeSql(_query, [], function (tx, results) {
 //		    console.log(storeC);
 		    var storeC = Ext.getStore('Contatos');
+		    console.log(storeC);
 		    var len = results.rows.length, i;
+		    console.log(len);
 		    storeC.removeAll();
 		    storeC.sync();
 		    for (i = 0; i < len; i++) {
