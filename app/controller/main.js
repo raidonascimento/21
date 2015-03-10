@@ -71,9 +71,9 @@ Ext.define('realPneus.controller.main', {
 	    'searchfield': {
 		clearicontap: 'clearSearch'
 	    },
-	     "clientesList #searchField": {
-                keyup: 'search'
-            },
+	    "clientesList #searchField": {
+		keyup: 'search'
+	    },
 	    'selectfield[name=idPneu]': {
 		change: 'onSelecaoPneuServico'
 	    }
@@ -255,13 +255,13 @@ Ext.define('realPneus.controller.main', {
 		var _coletasStore = Ext.getStore('coletasStore');
 		_coletasStore.load();
 		var _recordColetas = _coletasStore.data.last();
-		if (_recordColetas == null){    
-		_recordPneusColeta.set('codigo_coleta', '1.0');
-		_storePneusColeta.sync();
-		}else{
-		_recordPneusColeta.set('codigo_coleta', _recordColetas.data.id + 1);
-		_storePneusColeta.sync();
-		    
+		if (_recordColetas == null) {
+		    _recordPneusColeta.set('codigo_coleta', '1.0');
+		    _storePneusColeta.sync();
+		} else {
+		    _recordPneusColeta.set('codigo_coleta', _recordColetas.data.id + 1);
+		    _storePneusColeta.sync();
+
 		}
 	    }
 	    j++;
@@ -331,79 +331,48 @@ Ext.define('realPneus.controller.main', {
 	servicoField.setOptions(option);
 	servicoField.enable();
     },
-    
-    search: function(textfield, e, eOpts) {
-        var value = textfield.getValue(),	// Search value
-        	store = Ext.getStore('clientesStore');	// People store
+    search: function (textfield, e, eOpts) {
+	console.log("OI");
+	var db = openDatabase("realPneus", "1.0", "banco", 200000);
 
-        // Clear current filter if less than 2
-        if (value.length === 0) {
-        	store.clearFilter();
-        }
+	var value = textfield.getValue();
+	db.transaction(function (tx) {
+	    var _query = '';
+	    if (value.length > 3) {
+		_query = 'SELECT nome_cliente,codigo FROM clientes WHERE nome_cliente LIKE "' + value + '%" ';
+		tx.executeSql(_query, [], function (tx, results) {
+//		    console.log(storeC);
+		    var storeC = Ext.getStore('Contatos');
+		    var len = results.rows.length, i;
+		    storeC.removeAll();
+		    storeC.sync();
+		    for (i = 0; i < len; i++) {
+			Ext.getStore('Contatos').add({
+			    nome_cliente: results.rows.item(i).nome_cliente,
+			    codigo: results.rows.item(i).codigo
+			});
+		    }
+		    //console.log(storeC);
+		});
+	    } else {
+		var storeC = Ext.getStore('Contatos');
 
-        // Search term must be at least 2 characters
-        if (value.length < 2) {
-        	return;
-        }
-
-        // Clear any current filters
-        store.clearFilter();
-
-        // Check if a value is provided
-        if (value) {
-
-            // Spit value to get multiple terms
-            var terms = value.split(' ');
-
-            // Convert each search string into regex
-            var regexps = [];
-            Ext.each(terms, function(term) {
-
-                // Ensure term is not space and at least 2 characters
-                if (term && term.length > 1) {
-                    regexps.push(new RegExp(term, 'i')); // Case-insensitive regex
-                }
-
-            });
-	    
-store.filter();
-            // Filter records
-            store.filter(function(record) {
-
-
-                var matches = [];
-
-                // Check each of the regular expressions
-                Ext.each(regexps, function(regex) {
-
-        			var match = record.get('nome_cliente').match(regex);
-                    matches.push(match);
-
-                });
-
-                // If nothing was found, return false to not show
-                if (regexps.length > 1 && matches.indexOf(false) != -1) {
-                    return false;
-                } else {
-                    // Else return to show
-                    return matches[0];
-                }
-
-            });
-
-        }
+		var len = storeC.data.length;
+		if (len > 0) {
+		    storeC.removeAll();
+		    storeC.sync();
+		}
+	    }
+	});
 
     },
+    clearSearch: function (textfield, e, eOpts) {
 
-    clearSearch: function(textfield, e, eOpts) {
+	// Get store
+	Ext.getCmp('clientesList').getStore().clearFilter();
 
-        // Get store
-        var store = Ext.getStore('clientesStore');
-
-        // Clear filter
-        store.clearFilter();
 
     }
 
 });
-    
+

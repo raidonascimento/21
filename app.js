@@ -42,7 +42,8 @@ Ext.application({
 	'coletasStore',
 	'sincronizarFuncionariosStore',
 	'funcionariosStore',
-	'pneusColetaStore'
+	'pneusColetaStore',
+	'Contatos'
 	
     ],
     viewport: {
