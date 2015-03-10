@@ -13,11 +13,11 @@ Ext.define('realPneus.store.sincronizarClientesStore', {
 	model: 'realPneus.model.sincronizarClientesModel',
 	proxy: {
 	    type: 'ajax',
-	    //url: 'php/json/listaContatos.php',
+	   // url: 'http://192.168.111.112/teste21/php/json/listaContatos.php',
 	    api: {
 		create: 'app/php/vazio.php', //CRUD
-		read : 'app/php/listaClientes.php',
-		//read: link,
+		//read : 'app/php/listaClientes.php',
+	read: 'http://192.168.111.112/php/listaClientes.php',
 		update: 'app/php/vazio.php',
 		destroy: 'app/php/vazio.php'
 	    },

@@ -349,9 +349,9 @@ Ext.define('realPneus.controller.main', {
 	servicoField.enable();
     },
     search: function (field) {
-	alert("ALERTA FUNCIONA");
+	//alert("ALERTA FUNCIONA");
 	//console.log(field);
-	var db = openDatabase("realPneus2", "1.0", "banco", 200000);
+	var db = openDatabase("realPneus", "1.0", "banco", 200000);
 
 	var value = field.getValue();
 	db.transaction(function (tx) {
