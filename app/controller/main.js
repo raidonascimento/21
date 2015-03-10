@@ -108,14 +108,14 @@ Ext.define('realPneus.controller.main', {
     },
     teste: function () {
 		var db = openDatabase("realPneus2", "1.0", "banco", 200000);
-        db.transaction(function (tx) {tx.executeSql('CREATE TABLE IF NOT EXISTS contatos (codigo, nome_cliente)');
+        db.transaction(function (tx) {tx.executeSql('CREATE TABLE IF NOT EXISTS clientes (codigo, nome_cliente)');
         
-        tx.executeSql('INSERT INTO contatos (codigo, nome_cliente) VALUES ("1","sergio reis")');
+        tx.executeSql('INSERT INTO clientes (codigo, nome_cliente) VALUES ("1","sergio reis")');
         
-        tx.executeSql('INSERT INTO contatos (codigo, nome_cliente) VALUES ("2","carlos guimaraes")');
+        tx.executeSql('INSERT INTO clientes (codigo, nome_cliente) VALUES ("2","carlos guimaraes")');
         
-        tx.executeSql('INSERT INTO contatos (codigo, nome_cliente)VALUES ("3","maria silva")');
-        tx.executeSql('INSERT INTO contatos (codigo, nome_cliente) VALUES ("4","joao souza")');
+        tx.executeSql('INSERT INTO clientes (codigo, nome_cliente)VALUES ("3","maria silva")');
+        tx.executeSql('INSERT INTO clientes (codigo, nome_cliente) VALUES ("4","joao souza")');
         });
 	
 	
