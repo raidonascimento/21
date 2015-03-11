@@ -4,7 +4,10 @@ Ext.define('realPneus.controller.main', {
 	'Ext.MessageBox',
 	'Ext.util.Filter',
 	'Ext.field.Search',
-	'Ext.List'
+	'Ext.List',
+	'Ext.device.Communicator',
+	'Ext.device.sqlite.Sencha'
+
     ],
     config: {
 	routes: {
@@ -81,7 +84,6 @@ Ext.define('realPneus.controller.main', {
 	    }
 	}
     },
-    
     showMenuIniciar: function () {
 	var store = Ext.getStore('clientesStore');
 	store.load();
@@ -107,31 +109,87 @@ Ext.define('realPneus.controller.main', {
     showPneusList: function () {
 	Ext.Viewport.setActiveItem(this.getPneusList());
     },
+    
+    
     teste: function () {
-		var db = openDatabase("realPneus2", "1.0", "banco", 200000);
-        db.transaction(function (tx) {tx.executeSql('CREATE TABLE IF NOT EXISTS clientes (codigo, nome_cliente)');
-        
-        tx.executeSql('INSERT INTO clientes (codigo, nome_cliente) VALUES ("1","sergio reis")');
-        
-        tx.executeSql('INSERT INTO clientes (codigo, nome_cliente) VALUES ("2","carlos guimaraes")');
-        
-        tx.executeSql('INSERT INTO clientes (codigo, nome_cliente)VALUES ("3","maria silva")');
-        tx.executeSql('INSERT INTO clientes (codigo, nome_cliente) VALUES ("4","joao souza")');
-        });
 	
-	
-	
-	
-	
+        console.log("Using SQLite Plugin DB");
+	var db = Ext.device.SQLite.openDatabase({
+	    name: 'realPneus2',
+	    version: '1.0', // is ignored if `creationCallback` is provided
+	    displayName: 'MyDatabase',
+	    estimatedSize: 2 * 1024 * 1024
+	});
+
+	alert("abriu o banco");
+	db.transaction({
+	    callback: function (tx) {		
+		    tx.executeSql({
+			sqlStatement: 'CREATE TABLE IF NOT EXISTS clientes (id INTEGER PRIMARY KEY, nome_cliente TEXT, codigo INTEGER)',
+			arguments: [], // optional
+			callback: function (tx, resultSet) { // optional
+			},
+			failure: function (tx, err) {
+			    return true; // return `true` or do not provide `failure` callback to stop executing next SQL statement
+			}
+		    });
+		    tx.executeSql({
+			sqlStatement: 'INSERT INTO clientes (nome_cliente, codigo) VALUES (?, ?)',
+			arguments: ['xxx', 1], // arguments to bind each `?` placeholder in SQL statement
+			callback: function (tx, resultSet) { // optional
+			    var rowId = esultSet.getInsertId(); // throws an exception if SQL statement did not insert a row
+			    console.log('ID of inserted record: ' + rowId);
+			},
+			failure: function (tx, err) {
+			    return false; // return `false` to continue executing next SQL statement
+			}
+		    });
+		    tx.executeSql({
+			sqlStatement: 'SELECT * FROM clientes',
+			callback: function (tx, resultSet) {
+			    for (var i = 0; i < resultSet.rows.getLength(); ++i) {
+				console.log(resultSet.rows.item(i));
+			    }
+			},
+			failure: function (tx, err) { // optional
+			}
+		    });
+		
+	    },
+	    success: function () { // optional
+		console.log('transaction has been successfully commited!');
+	    },
+	    failure: function (err) { // optional
+		console.log('transaction has been rolled back with error: ' + err);
+	    }
+	});
+alert("criou  banco");
+
+//
+//	db.transaction(function (tx) {
+//	    tx.executeSql('CREATE TABLE IF NOT EXISTS clientes (codigo, nome_cliente)');
+//
+//	    tx.executeSql('INSERT INTO clientes (codigo, nome_cliente) VALUES ("1","sergio reis")');
+//
+//	    tx.executeSql('INSERT INTO clientes (codigo, nome_cliente) VALUES ("2","carlos guimaraes")');
+//
+//	    tx.executeSql('INSERT INTO clientes (codigo, nome_cliente)VALUES ("3","maria silva")');
+//	    tx.executeSql('INSERT INTO clientes (codigo, nome_cliente) VALUES ("4","joao souza")');
+//	});
+//
+//
+
+
+
 //	var _coletasStore = Ext.getStore('coletasStore');
 //	_coletasStore.load();
 //	Ext.Viewport.setActiveItem(this.getMenuIniciar());
 //	this.salvarIdColetaPneus();
     },
     sincronizar: function () {
-	
-	
-	
+
+
+
 	this.apagarClientesSincronizar();
 	this.sincronizarClientes();
 	this.apagarPneusSincronizar();
@@ -140,7 +198,7 @@ Ext.define('realPneus.controller.main', {
 	this.sincronizarServico();
 	this.apagarFuncionariosSincronizar();
 	this.sincronizarFuncionario();
-	
+
 	alert("concluido");
     },
     apagarClientesSincronizar: function () {
@@ -155,13 +213,13 @@ Ext.define('realPneus.controller.main', {
 
 	var j = 0;
 	var _store = Ext.getStore('sincronizarClientesStore');
-	var _store2 = Ext.getStore('clientesStore');
-	
+//	var _store2 = Ext.getStore('Contatos');
+
 	_store.each(function () {
 	    var _record = _store.data.get(j);
-	    var _model = Ext.create('realPneus.model.clientesModel', {
-		nome_cliente: _record.data.nome,
-		codigo: _record.data.codigo
+//	    var _model = Ext.create('realPneus.model.clientesModel', {
+//		nome_cliente: _record.data.nome,
+//		codigo: _record.data.codigo
 //		apelido: record.data.apelido,
 //		cpfoucnpj: record.data.cpfoucnpj,
 //		registro: record.data.registro,
@@ -170,11 +228,17 @@ Ext.define('realPneus.controller.main', {
 //		celular: record.data.celular,
 //		email: record.data.email,
 //		localidade: record.data.localidade
+//	    _store2.sync();
+
+	    Ext.getStore('Contatos').add({
+		nome_cliente: _record.data.nome,
+		codigo: _record.data.codigo
 	    });
-	    _store2.add(_model);
 	    j++;
 	});
-	_store2.sync();
+//	    _store2.add(_model);
+//	});
+	//_store2.sync();
     },
     apagarPneusSincronizar: function () {
 	var db = openDatabase("realPneus", "1.0", "", 200000);
@@ -372,7 +436,7 @@ Ext.define('realPneus.controller.main', {
 		    var storeC = Ext.getStore('Contatos');
 		    //console.log(storeC);
 		    var len = results.rows.length, i;
-		   // console.log(len);
+		    // console.log(len);
 		    storeC.removeAll();
 		    storeC.sync();
 		    for (i = 0; i < len; i++) {
