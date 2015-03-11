@@ -31,7 +31,8 @@ Ext.define('realPneus.store.sincronizarClientesStore', {
 		writeAllFields: true,
 		encode: true,
 		allowSingle: true
-	    }
+	    },
+	    masked:{ xtype:'loadmask', message:'My message'}
 	},
 	autoLoad: true,
 	autoSync: true	

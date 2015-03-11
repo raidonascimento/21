@@ -81,6 +81,7 @@ Ext.define('realPneus.controller.main', {
 	    }
 	}
     },
+    
     showMenuIniciar: function () {
 	var store = Ext.getStore('clientesStore');
 	store.load();
@@ -128,6 +129,9 @@ Ext.define('realPneus.controller.main', {
 //	this.salvarIdColetaPneus();
     },
     sincronizar: function () {
+	
+	
+	
 	this.apagarClientesSincronizar();
 	this.sincronizarClientes();
 	this.apagarPneusSincronizar();
@@ -136,6 +140,8 @@ Ext.define('realPneus.controller.main', {
 	this.sincronizarServico();
 	this.apagarFuncionariosSincronizar();
 	this.sincronizarFuncionario();
+	
+	alert("concluido");
     },
     apagarClientesSincronizar: function () {
 	var db = openDatabase("realPneus", "1.0", "", 200000);
@@ -145,6 +151,8 @@ Ext.define('realPneus.controller.main', {
 	}
     },
     sincronizarClientes: function () {
+	/*global Ext:false */
+
 	var j = 0;
 	var _store = Ext.getStore('sincronizarClientesStore');
 	var _store2 = Ext.getStore('clientesStore');
